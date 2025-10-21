@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一点小惊喜</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        // 配置Tailwind自定义主题
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF85A2',
+                        secondary: '#A7BFE8',
+                        light: '#FFF5F8',
+                        dark: '#5A5A7A'
+                    },
+                    fontFamily: {
+                        cute: ['"Comic Sans MS"', '"Marker Felt"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .float {
+                animation: float 6s ease-in-out infinite;
+            }
+            .float-delay-1 {
+                animation: float 6s ease-in-out 1s infinite;
+            }
+            .float-delay-2 {
+                animation: float 6s ease-in-out 2s infinite;
+            }
+            .bounce-slow {
+                animation: bounce 3s ease-in-out infinite;
+            }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-light to-pink-50 min-h-screen overflow-x-hidden font-cute text-dark">
+    <!-- 漂浮装饰元素 -->
+    <div class="fixed top-10 left-10 w-16 h-16 rounded-full bg-primary/20 float hidden md:block"></div>
+    <div class="fixed top-40 right-20 w-12 h-12 rounded-full bg-secondary/30 float-delay-1 hidden md:block"></div>
+    <div class="fixed bottom-20 left-20 w-20 h-20 rounded-full bg-yellow-200/40 float-delay-2 hidden md:block"></div>
+    <div class="fixed top-1/3 right-1/4 w-10 h-10 rounded-full bg-green-200/30 float hidden md:block"></div>
+
+    <div class="container mx-auto px-4 py-12 relative z-10">
+        <!-- 标题区域 -->
+        <div class="text-center mb-12">
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-primary text-shadow mb-4">
+                嘿，宋雪女士今天辛苦啦！
+            </h1>
+            <p class="text-[clamp(1rem,2vw,1.25rem)] text-dark/80 max-w-lg mx-auto">
+                知道你今天一定很累了，特意准备了个小惊喜给你~
+            </p>
+        </div>
+
+        <!-- 主要内容区 -->
+        <div class="max-w-2xl mx-auto bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-6 md:p-10 mb-12 transition-all duration-300 hover:shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="inline-block p-4 rounded-full bg-primary/10 mb-4">
+                    <i class="fa fa-heart text-4xl text-primary bounce-slow"></i>
+                </div>
+                <p class="text-lg md:text-xl leading-relaxed">
+                    不管今天遇到了什么困难，你都已经很棒地坚持过来了！<br>
+                    累了就好好休息一下，别给自己太大压力呀~
+                </p>
+            </div>
+
+            <!-- 互动按钮区 -->
+            <div class="grid grid-cols-2 gap-4 md:gap-6 mb-8">
+                <button id="complimentBtn" class="bg-primary/90 hover:bg-primary text-white py-3 px-4 rounded-2xl shadow-md transition-all duration-300 transform hover:scale-105">
+                    <i class="fa fa-star mr-2"></i>夸夸我
+                </button>
+                <button id="jokeBtn" class="bg-secondary/90 hover:bg-secondary text-white py-3 px-4 rounded-2xl shadow-md transition-all duration-300 transform hover:scale-105">
+                    <i class="fa fa-smile-o mr-2"></i>讲个笑话
+                </button>
+                <button id="motivateBtn" class="bg-green-400/90 hover:bg-green-400 text-white py-3 px-4 rounded-2xl shadow-md transition-all duration-300 transform hover:scale-105">
+                    <i class="fa fa-lightbulb-o mr-2"></i>加油语录
+                </button>
+                <button id="cuteBtn" class="bg-yellow-300/90 hover:bg-yellow-300 text-dark py-3 px-4 rounded-2xl shadow-md transition-all duration-300 transform hover:scale-105">
+                    <i class="fa fa-paw mr-2"></i>可爱暴击
+                </button>
+            </div>
+
+            <!-- 结果显示区 -->
+            <div id="resultArea" class="min-h-[120px] flex items-center justify-center p-6 rounded-2xl bg-light/50 transition-all duration-500">
+                <p class="text-center text-gray-500" id="resultText">点击上面的按钮，看看有什么惊喜吧~</p>
+            </div>
+        </div>
+
+        <!-- 底部信息 -->
+        <div class="text-center text-dark/60 text-sm">
+            <p>希望这个小页面能给你带来一点点快乐 ❤️</p>
+            <p class="mt-2">累了就早点休息，明天又是美好的一天呀~</p>
+        </div>
+    </div>
+
+    <!-- 可爱元素容器 -->
+    <div id="cuteElementsContainer" class="fixed inset-0 pointer-events-none z-20"></div>
+
+    <script>
+        // 数据内容
+        const compliments = [
+            "你笑起来的时候，整个世界都亮了！",
+            "今天的你也超有魅力，闪闪发光呢~",
+            "你的共情能力真的很强，和你聊天很舒服",
+            "你总是那么细心，这点真的很让人佩服",
+            "每次和你相处都觉得很开心，你是个小太阳吧",
+            "你的审美真好，选的东西都很有品味",
+            "你认真做事的样子特别吸引人",
+            "你对朋友真的很真诚，能认识你很幸运"
+        ];
+
+        const jokes = [
+            "为什么数学书总是很忧郁？因为它有太多的问题了。",
+            "我最近学会了一项新技能，就是能同时用两只手玩手机，厉害吧？其实是因为一只手没电了...",
+            "你知道什么水果最让人感到惊讶吗？是橙（陈）旧的惊喜呀！",
+            "为什么程序员总是分不清万圣节和圣诞节？因为 Oct 31 等于 Dec 25 呀（八进制31等于十进制25）",
+            "我问我的猫：“你是不是偷偷喝了我的牛奶？” 它说：“喵~” 我就知道是它，因为它不敢说“汪”"
+        ];
+
+        const motivations = [
+            "今天已经很棒了，明天继续闪闪发光吧！",
+            "累了就休息，不是放弃，是为了更好地出发",
+            "你已经比昨天的自己进步了，这就值得骄傲",
+            "别担心，所有的困难都会像泡泡一样消失的",
+            "你不需要和别人比，做自己就已经很优秀了",
+            "每一步小小的坚持，都会带来大大的改变",
+            "你的努力，时间都会看在眼里的"
+        ];
+
+        // DOM元素
+        const complimentBtn = document.getElementById('complimentBtn');
+        const jokeBtn = document.getElementById('jokeBtn');
+        const motivateBtn = document.getElementById('motivateBtn');
+        const cuteBtn = document.getElementById('cuteBtn');
+        const resultArea = document.getElementById('resultArea');
+        const resultText = document.getElementById('resultText');
+        const cuteContainer = document.getElementById('cuteElementsContainer');
+
+        // 随机获取内容
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // 显示结果
+        function showResult(text, bgColor) {
+            resultArea.style.backgroundColor = bgColor;
+            resultText.textContent = text;
+            
+            // 添加动画效果
+            resultArea.classList.add('scale-105');
+            setTimeout(() => {
+                resultArea.classList.remove('scale-105');
+            }, 300);
+        }
+
+        // 创建可爱元素
+        function createCuteElement() {
+            const elements = ['❤️', '✨', '🌸', '🐾', '🌟', '🥰', '💖', '☺️'];
+            const element = document.createElement('div');
+            element.textContent = elements[Math.floor(Math.random() * elements.length)];
+            element.classList.add('absolute', 'text-xl', 'md:text-2xl', 'transition-all', 'duration-1000');
+            
+            // 随机位置和动画
+            const size = Math.random() * 20 + 20;
+            element.style.left = `${Math.random() * 100}vw`;
+            element.style.top = `${Math.random() * 100}vh`;
+            element.style.opacity = '0';
+            element.style.transform = `scale(0)`;
+            
+            cuteContainer.appendChild(element);
+            
+            // 显示动画
+            setTimeout(() => {
+                element.style.opacity = '1';
+                element.style.transform = `scale(1) translateY(-${Math.random() * 100 + 50}px)`;
+            }, 10);
+            
+            // 移除元素
+            setTimeout(() => {
+                element.style.opacity = '0';
+                element.style.transform = `scale(0) translateY(-${Math.random() * 200 + 100}px)`;
+                setTimeout(() => element.remove(), 1000);
+            }, 3000);
+        }
+
+        // 事件监听
+        complimentBtn.addEventListener('click', () => {
+            showResult(getRandomItem(compliments), 'rgba(255, 133, 162, 0.2)');
+        });
+
+        jokeBtn.addEventListener('click', () => {
+            showResult(getRandomItem(jokes), 'rgba(167, 191, 232, 0.2)');
+        });
+
+        motivateBtn.addEventListener('click', () => {
+            showResult(getRandomItem(motivations), 'rgba(72, 187, 120, 0.2)');
+        });
+
+        cuteBtn.addEventListener('click', () => {
+            resultArea.style.backgroundColor = 'rgba(250, 204, 21, 0.2)';
+            resultText.textContent = '哇！可爱能量发射中~';
+            
+            // 创建多个可爱元素
+            for(let i = 0; i < 15; i++) {
+                setTimeout(() => createCuteElement(), i * 100);
+            }
+        });
+
+        // 页面加载动画
+        window.addEventListener('load', () => {
+            document.body.classList.add('opacity-0');
+            setTimeout(() => {
+                document.body.classList.remove('opacity-0');
+                document.body.classList.add('transition-opacity', 'duration-1000', 'opacity-100');
+            }, 100);
+        });
+    </script>
+</body>
+</html>
